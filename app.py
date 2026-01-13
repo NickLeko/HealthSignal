@@ -55,6 +55,29 @@ if generate:
     msk_lvl, msk_pts, msk_reasons = score_msk_energy(x)
     actions = pick_actions(cardio_lvl, sleep_lvl, msk_lvl, x)
 
+        #DEBUG BLOCK 
+    debug = st.checkbox("Debug mode (show internals)")
+    if debug:
+        st.write({
+            "cardiometabolic": {
+                "level": cardio_lvl,
+                "points": cardio_pts,
+                "drivers": cardio_reasons
+            },
+            "sleep_stress": {
+                "level": sleep_lvl,
+                "points": sleep_pts,
+                "drivers": sleep_reasons
+            },
+            "msk_energy": {
+                "level": msk_lvl,
+                "points": msk_pts,
+                "drivers": msk_reasons
+            },
+            "actions_selected": [a["title"] for a in actions]
+        })
+
+
     st.markdown("## Risk Summary (5–10 year horizon)")
     st.markdown(f"**Cardiometabolic risk — {cardio_lvl}**  \nDrivers: {', '.join(cardio_reasons) if cardio_reasons else 'insufficient data'}")
     st.markdown(f"**Musculoskeletal / energy decline — {msk_lvl}**  \nDrivers: {', '.join(msk_reasons) if msk_reasons else 'insufficient data'}")
