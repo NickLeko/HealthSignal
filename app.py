@@ -237,6 +237,7 @@ st.sidebar.divider()
 generate = st.sidebar.button("Generate report")
 
 
+
 # Report Rendering
 
 if generate:
@@ -278,42 +279,54 @@ if generate:
             }
         )
 
-    st.markdown("## Risk Summary (5–10 year horizon)")
-    st.markdown(
-        f"**Cardiometabolic risk — {cardio_lvl}**  \n"
-        f"Drivers: {', '.join(cardio_reasons) if cardio_reasons else 'insufficient data'}"
-    )
-    st.markdown(
-        f"**Musculoskeletal / energy decline — {msk_lvl}**  \n"
-        f"Drivers: {', '.join(msk_reasons) if msk_reasons else 'insufficient data'}"
-    )
-    st.markdown(
-        f"**Sleep / stress load — {sleep_lvl}**  \n"
-        f"Drivers: {', '.join(sleep_reasons) if sleep_reasons else 'insufficient data'}"
-    )
+    # ---- Fix A: render each section in its own container ----
+    with st.container():
+        st.markdown("## Risk Summary (5–10 year horizon)")
+        st.markdown(
+            f"**Cardiometabolic risk — {cardio_lvl}**  \n"
+            f"Drivers: {', '.join(cardio_reasons) if cardio_reasons else 'insufficient data'}"
+        )
+        st.markdown(
+            f"**Musculoskeletal / energy decline — {msk_lvl}**  \n"
+            f"Drivers: {', '.join(msk_reasons) if msk_reasons else 'insufficient data'}"
+        )
+        st.markdown(
+            f"**Sleep / stress load — {sleep_lvl}**  \n"
+            f"Drivers: {', '.join(sleep_reasons) if sleep_reasons else 'insufficient data'}"
+        )
 
-    st.markdown("## Priority Actions (next 90 days)")
-    if not actions:
-        st.info("No actions triggered. (This likely indicates missing/unknown inputs; check debug mode.)")
-    else:
-        for i, a in enumerate(actions, 1):
-            st.markdown(
-                f"**Action {i}: {a['title']}**  \n"
-                f"Target: {a['target']}  \n"
-                f"Why: {a['why']}"
-            )
+    with st.container():
+        st.markdown("## Priority Actions (next 90 days)")
+        if not actions:
+            st.info("No actions triggered. (Likely missing/unknown inputs; check debug mode.)")
+        else:
+            for i, a in enumerate(actions, 1):
+                st.markdown(
+                    f"**Action {i}: {a['title']}**  \n"
+                    f"Target: {a['target']}  \n"
+                    f"Why: {a['why']}"
+                )
 
-    st.markdown("## Early Warning Signals")
-    st.markdown("- Blood pressure trending up (esp. consistent >130/85 at home)")
-    st.markdown("- Waist/weight trend increasing over 2–3 months")
-    st.markdown("- Sleep <6 hours on multiple nights/week")
-    st.markdown("- Resting HR trending upward (if tracked)")
+    with st.container():
+        st.markdown("## Early Warning Signals")
+        st.markdown("- Blood pressure trending up (esp. consistent >130/85 at home)")
+        st.markdown("- Waist/weight trend increasing over 2–3 months")
+        st.markdown("- Sleep <6 hours on multiple nights/week")
+        st.markdown("- Resting HR trending upward (if tracked)")
 
-    st.markdown("## What you do **NOT** need to worry about right now")
-    st.markdown("- Continuous glucose monitors\n- Advanced lipid panels\n- VO₂ max testing\n- Supplement stacks\n- Extreme diets/biohacks")
+    with st.container():
+        st.markdown("## What you do **NOT** need to worry about right now")
+        st.markdown(
+            "- Continuous glucose monitors\n"
+            "- Advanced lipid panels\n"
+            "- VO₂ max testing\n"
+            "- Supplement stacks\n"
+            "- Extreme diets/biohacks"
+        )
 
     st.caption(
         "Decision support only. Not diagnosis or treatment. Seek clinical care for concerning symptoms or major changes."
     )
+
 else:
     st.info("Use the sidebar to select a preset (e.g., Persona A) and click **Generate report**.")
