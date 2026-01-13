@@ -307,7 +307,7 @@ if st.session_state.generated:
     with tabs[1]:
         st.markdown("## Priority Actions (next 90 days)")
 
-    for i, a in enumerate(actions, 1):
+        for i, a in enumerate(actions, 1):
         st.markdown(
             f"**Action {i}: {a['title']}**  \n"
             f"Target: {a['target']}  \n"
