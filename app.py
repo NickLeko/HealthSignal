@@ -1,7 +1,7 @@
 import streamlit as st
 from risk_engine import Inputs, score_cardiometabolic, score_sleep_stress, score_msk_energy, pick_actions
 
-st.set_page_config(page_title="HealthTriageAI", layout="centered")
+st.set_page_config(page_title="HealthSignal", layout="centered", initial_sidebar_state="expanded")
 st.title("HealthTriageAI — Preventive Snapshot (MVP)")
 st.caption("Decision support only. Not diagnosis or treatment.")
 
