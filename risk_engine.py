@@ -159,4 +159,20 @@ def pick_actions(cardio: Likelihood, sleep: Likelihood, msk: Likelihood, x: Inpu
             "why": "Improves sleep quality and reduces cardiometabolic load."
         })
 
+    # ---- FALLBACKS (maintenance actions) ----
+    if len(actions) < 2:
+        actions.append({
+            "title": "Maintain your current sleep routine",
+            "target": "Keep sleep consistent; avoid <6 hours on multiple nights/week",
+            "why": "Your sleep looks stable—maintenance prevents drift and supports long-term resilience."
+        })
+
+    if len(actions) < 2:
+        actions.append({
+            "title": "Maintain a minimum activity baseline",
+            "target": "150 min/week moderate activity OR 2×/week strength (keep what’s working)",
+            "why": "Low-risk status is fragile; baseline consistency protects it with minimal time cost."
+        })
+
     return actions[:2]
+
