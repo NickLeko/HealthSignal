@@ -335,7 +335,7 @@ if st.session_state.generated:
     with tabs[4]:
         st.markdown("## Debug")
 
-    with st.container(height=600):
+    with st.container(height=900):
         st.write(
             {
                 "cardiometabolic": {
