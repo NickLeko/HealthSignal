@@ -87,6 +87,8 @@ PRESETS = {
 if "generated" not in st.session_state:
     st.session_state.generated = False
 
+if "report" not in st.session_state:
+    st.session_state.report = None
 
 # If user has never loaded anything, default to Persona A once.
 if "initialized" not in st.session_state:
@@ -249,127 +251,125 @@ if st.sidebar.button("Reset report"):
 
 
 
-# Report Rendering
-
+# ----------------------------
+# Report Rendering (state-driven)
+# ----------------------------
 if st.session_state.generated:
+    report = st.session_state.get("report")
 
+    # If generated got flipped on but no report payload exists (edge case), fail safely.
+    if report is None:
+        st.warning("Report state was cleared. Click **Generate report** again.")
+    else:
+        # Unpack persisted report values (prevents NameError after reruns)
+        cardio_lvl = report["cardio"]["level"]
+        cardio_pts = report["cardio"]["points"]
+        cardio_reasons = report["cardio"]["reasons"]
 
-    x = Inputs(
-        age=age,
-        sex=sex,
-        height_cm=height_cm,
-        weight_kg=weight_kg,
-        family_cvd=family_cvd,
-        family_t2d=family_t2d,
-        exercise_bucket=exercise_bucket.split()[0],  # "LOW"/"MID"/"HIGH"
-        sleep_quality=sleep_quality,
-        sleep_duration_bucket=sleep_duration_bucket,
-        alcohol_bucket=alcohol_bucket,
-        smoking_vaping=smoking_vaping,
-        known_htn=known_htn,
-        known_prediabetes=known_prediabetes,
-        known_sleep_apnea=known_sleep_apnea,
-        bp_bucket=bp_bucket,
-        ldl_bucket=ldl_bucket,
-        a1c_bucket=a1c_bucket,
-        rhr_bucket=rhr_bucket,
-    )
+        sleep_lvl = report["sleep"]["level"]
+        sleep_pts = report["sleep"]["points"]
+        sleep_reasons = report["sleep"]["reasons"]
 
-    cardio_lvl, cardio_pts, cardio_reasons = score_cardiometabolic(x)
-    sleep_lvl, sleep_pts, sleep_reasons = score_sleep_stress(x)
-    msk_lvl, msk_pts, msk_reasons = score_msk_energy(x)
-    actions = pick_actions(cardio_lvl, sleep_lvl, msk_lvl, x)
+        msk_lvl = report["msk"]["level"]
+        msk_pts = report["msk"]["points"]
+        msk_reasons = report["msk"]["reasons"]
 
-    
+        actions = report["actions"]
 
-    # Tabs-based report (stable on desktop + mobile)
-tabs = st.tabs(
-    ["Risk Summary", "Priority Actions", "Warning Signals", "Deprioritization", "Debug"]
-)
-
-
-# Tab 0 — Risk Summary
-
-with tabs[0]:
-    st.markdown("## Risk Summary (5–10 year horizon)")
-    st.markdown(
-        f"**Cardiometabolic risk — {cardio_lvl}**  \n"
-        f"Drivers: {', '.join(cardio_reasons) if cardio_reasons else 'insufficient data'}"
-    )
-    st.markdown(
-        f"**Musculoskeletal / energy decline — {msk_lvl}**  \n"
-        f"Drivers: {', '.join(msk_reasons) if msk_reasons else 'insufficient data'}"
-    )
-    st.markdown(
-        f"**Sleep / stress load — {sleep_lvl}**  \n"
-        f"Drivers: {', '.join(sleep_reasons) if sleep_reasons else 'insufficient data'}"
-    )
-
-
-# Tab 1 — Priority Actions
-
-with tabs[1]:
-    st.markdown("## Priority Actions (next 90 days)")
-
-    for i, a in enumerate(actions, 1):
-        st.markdown(
-            f"**Action {i}: {a['title']}**  \n"
-            f"Target: {a['target']}  \n"
-            f"Why: {a['why']}"
+        # Tabs-based report (stable on desktop + mobile)
+        tabs = st.tabs(
+            ["Risk Summary", "Priority Actions", "Warning Signals", "Deprioritization", "Debug"]
         )
 
-
-# Tab 2 — Early Warning Signals
-
-with tabs[2]:
-    st.markdown("## Early Warning Signals")
-    st.markdown("- Blood pressure trending up (esp. consistent >130/85 at home)")
-    st.markdown("- Waist/weight trend increasing over 2–3 months")
-    st.markdown("- Sleep <6 hours on multiple nights/week")
-    st.markdown("- Resting HR trending upward (if tracked)")
-
-
-# Tab 3 — Deprioritization
-
-with tabs[3]:
-    st.markdown("## What you do **NOT** need to worry about right now")
-    st.markdown(
-        "- Continuous glucose monitors\n"
-        "- Advanced lipid panels\n"
-        "- VO₂ max testing\n"
-        "- Supplement stacks\n"
-        "- Extreme diets/biohacks"
-    )
-
-
-# Tab 4 — Debug (Internal)
-
-with tabs[4]:
-    st.markdown("## Debug (Internal)")
-
-    show_debug = st.checkbox("Show debug details", value=False, key="show_debug")
-
-    if show_debug:
-        with st.container(height=400):
-            st.write(
-                {
-                    "cardiometabolic": {
-                        "level": cardio_lvl,
-                        "points": cardio_pts,
-                        "drivers": cardio_reasons,
-                    },
-                    "sleep_stress": {
-                        "level": sleep_lvl,
-                        "points": sleep_pts,
-                        "drivers": sleep_reasons,
-                    },
-                    "msk_energy": {
-                        "level": msk_lvl,
-                        "points": msk_pts,
-                        "drivers": msk_reasons,
-                    },
-                    "actions_selected": [a["title"] for a in actions],
-                }
+   
+        # Tab 0 — Risk Summary
+ 
+        with tabs[0]:
+            st.markdown("## Risk Summary (5–10 year horizon)")
+            st.markdown(
+                f"**Cardiometabolic risk — {cardio_lvl}**  \n"
+                f"Drivers: {', '.join(cardio_reasons) if cardio_reasons else 'insufficient data'}"
             )
-    else:
-        st.info("Toggle **Show debug details** to display internal scoring.")
+            st.markdown(
+                f"**Musculoskeletal / energy decline — {msk_lvl}**  \n"
+                f"Drivers: {', '.join(msk_reasons) if msk_reasons else 'insufficient data'}"
+            )
+            st.markdown(
+                f"**Sleep / stress load — {sleep_lvl}**  \n"
+                f"Drivers: {', '.join(sleep_reasons) if sleep_reasons else 'insufficient data'}"
+            )
+
+
+        # Tab 1 — Priority Actions
+        
+        with tabs[1]:
+            st.markdown("## Priority Actions (next 90 days)")
+            for i, a in enumerate(actions, 1):
+                st.markdown(
+                    f"**Action {i}: {a['title']}**  \n"
+                    f"Target: {a['target']}  \n"
+                    f"Why: {a['why']}"
+                )
+
+
+        # Tab 2 — Early Warning Signals
+  
+        with tabs[2]:
+            st.markdown("## Early Warning Signals")
+            st.markdown("- Blood pressure trending up (esp. consistent >130/85 at home)")
+            st.markdown("- Waist/weight trend increasing over 2–3 months")
+            st.markdown("- Sleep <6 hours on multiple nights/week")
+            st.markdown("- Resting HR trending upward (if tracked)")
+
+       
+        # Tab 3 — Deprioritization
+      
+        with tabs[3]:
+            st.markdown("## What you do **NOT** need to worry about right now")
+            st.markdown(
+                "- Continuous glucose monitors\n"
+                "- Advanced lipid panels\n"
+                "- VO₂ max testing\n"
+                "- Supplement stacks\n"
+                "- Extreme diets/biohacks"
+            )
+
+      
+        # Tab 4 — Debug (Internal)
+     
+        with tabs[4]:
+            st.markdown("## Debug (Internal)")
+
+            show_debug = st.checkbox("Show debug details", value=False, key="show_debug")
+
+            if show_debug:
+                with st.container(height=400):
+                    st.write(
+                        {
+                            "cardiometabolic": {
+                                "level": cardio_lvl,
+                                "points": cardio_pts,
+                                "drivers": cardio_reasons,
+                            },
+                            "sleep_stress": {
+                                "level": sleep_lvl,
+                                "points": sleep_pts,
+                                "drivers": sleep_reasons,
+                            },
+                            "msk_energy": {
+                                "level": msk_lvl,
+                                "points": msk_pts,
+                                "drivers": msk_reasons,
+                            },
+                            "actions_selected": [a["title"] for a in actions],
+                        }
+                    )
+            else:
+                st.info("Toggle **Show debug details** to display internal scoring.")
+
+        st.caption(
+            "Decision support only. Not diagnosis or treatment. Seek clinical care for concerning symptoms or major changes."
+        )
+
+else:
+    st.info("Use the sidebar to select a preset (e.g., Persona A) and click **Generate report**.")
