@@ -305,8 +305,7 @@ if st.session_state.generated:
         )
 
     with tabs[1]:
-        st.markdown("## Priority Actions (next 90 days)")
-        ")
+        st.markdown("## Priority Actions (next 90 days)")")
         else:
             for i, a in enumerate(actions, 1):
                 st.markdown(
