@@ -2,44 +2,42 @@ import streamlit as st
 from risk_engine import Inputs, score_cardiometabolic, score_sleep_stress, score_msk_energy, pick_actions
 
 st.set_page_config(page_title="HealthSignal", layout="centered", initial_sidebar_state="expanded")
-st.title("HealthTriageAI — Preventive Snapshot (MVP)")
+st.title("HealthSignal — Preventive Snapshot (MVP)")
 st.caption("Decision support only. Not diagnosis or treatment.")
 
-with st.form("intake"):
-    age = st.number_input("Age", 18, 90, 38)
-    sex = st.selectbox("Sex", ["Male", "Female"])
+st.sidebar.header("Intake")
 
-    col1, col2 = st.columns(2)
-    with col1:
-        height_cm = st.number_input("Height (cm)", 120.0, 230.0, 183.0)
-    with col2:
-        weight_kg = st.number_input("Weight (kg)", 35.0, 250.0, 95.0)
+age = st.sidebar.number_input("Age", 18, 90, 38)
+sex = st.sidebar.selectbox("Sex", ["Male", "Female"])
 
-    st.subheader("Family history")
-    family_cvd = st.checkbox("Cardiovascular disease (HTN/heart attack/stroke)")
-    family_t2d = st.checkbox("Type 2 diabetes")
+height_cm = st.sidebar.number_input("Height (cm)", 120.0, 230.0, 183.0)
+weight_kg  = st.sidebar.number_input("Weight (kg)", 35.0, 250.0, 95.0)
 
-    st.subheader("Lifestyle")
-    exercise_bucket = st.selectbox("Exercise frequency", ["LOW (0–1x/week)", "MID (2–3x/week)", "HIGH (4+x/week)"])
-    sleep_quality = st.selectbox("Sleep quality", ["RESTFUL", "FRAGMENTED", "POOR"])
-    sleep_duration_bucket = st.selectbox("Average sleep duration (optional)", ["UNKNOWN", "<6", "6-7", "7+"])
-    alcohol_bucket = st.selectbox("Alcohol intake (drinks/week)", ["0-3", "4-7", "8-14", "15+"])
-    smoking_vaping = st.selectbox("Smoking/vaping", ["UNKNOWN", "NO", "YES"])
+st.sidebar.subheader("Family history")
+family_cvd = st.sidebar.checkbox("Cardiovascular disease (HTN/heart attack/stroke)")
+family_t2d = st.sidebar.checkbox("Type 2 diabetes")
 
-    st.subheader("Known conditions")
-    known_htn = st.checkbox("Hypertension (diagnosed)")
-    known_prediabetes = st.checkbox("Prediabetes (diagnosed)")
-    known_sleep_apnea = st.checkbox("Sleep apnea (diagnosed)")
+st.sidebar.subheader("Lifestyle")
+exercise_bucket = st.sidebar.selectbox("Exercise frequency", ["LOW (0–1x/week)", "MID (2–3x/week)", "HIGH (4+x/week)"])
+sleep_quality = st.sidebar.selectbox("Sleep quality", ["RESTFUL", "FRAGMENTED", "POOR"])
+sleep_duration_bucket = st.sidebar.selectbox("Avg sleep duration (optional)", ["UNKNOWN", "<6", "6-7", "7+"])
+alcohol_bucket = st.sidebar.selectbox("Alcohol intake (drinks/week)", ["0-3", "4-7", "8-14", "15+"])
+smoking_vaping = st.sidebar.selectbox("Smoking/vaping", ["UNKNOWN", "NO", "YES"])
 
-    st.subheader("Optional signals")
-    bp_bucket = st.selectbox("Blood pressure trend (optional)", ["UNKNOWN", "NORMAL", "SOMETIMES_HIGH", "CONSISTENTLY_HIGH", "DIAGNOSED"])
-    ldl_bucket = st.selectbox("LDL category (optional)", ["UNKNOWN", "NORMAL", "BORDERLINE", "HIGH"])
-    a1c_bucket = st.selectbox("A1C/glucose category (optional)", ["UNKNOWN", "NORMAL", "BORDERLINE", "ELEVATED"])
-    rhr_bucket = st.selectbox("Resting HR category (optional)", ["UNKNOWN", "NORMAL", "ELEVATED"])
+st.sidebar.subheader("Known conditions")
+known_htn = st.sidebar.checkbox("Hypertension (diagnosed)")
+known_prediabetes = st.sidebar.checkbox("Prediabetes (diagnosed)")
+known_sleep_apnea = st.sidebar.checkbox("Sleep apnea (diagnosed)")
 
-    submitted = st.form_submit_button("Generate report")
+st.sidebar.subheader("Optional signals")
+bp_bucket = st.sidebar.selectbox("Blood pressure trend (optional)", ["UNKNOWN", "NORMAL", "SOMETIMES_HIGH", "CONSISTENTLY_HIGH", "DIAGNOSED"])
+ldl_bucket = st.sidebar.selectbox("LDL category (optional)", ["UNKNOWN", "NORMAL", "BORDERLINE", "HIGH"])
+a1c_bucket = st.sidebar.selectbox("A1C/glucose category (optional)", ["UNKNOWN", "NORMAL", "BORDERLINE", "ELEVATED"])
+rhr_bucket = st.sidebar.selectbox("Resting HR category (optional)", ["UNKNOWN", "NORMAL", "ELEVATED"])
 
-if submitted:
+generate = st.sidebar.button("Generate report")
+
+if generate:
     x = Inputs(
         age=age, sex=sex, height_cm=height_cm, weight_kg=weight_kg,
         family_cvd=family_cvd, family_t2d=family_t2d,
