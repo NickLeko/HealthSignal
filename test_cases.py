@@ -12,7 +12,7 @@ def run_case(name, x):
     print("MSK:", msk)
     print("Actions:", [a["title"] for a in actions])
 
-# Persona A (your main case)
+# Persona A (main case)
 persona_a = Inputs(
     age=38, sex="Male", height_cm=183, weight_kg=95,
     family_cvd=True, family_t2d=True,
