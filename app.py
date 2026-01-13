@@ -83,6 +83,11 @@ PRESETS = {
     },
 }
 
+# Persistent state for report
+if "generated" not in st.session_state:
+    st.session_state.generated = False
+
+
 # If user has never loaded anything, default to Persona A once.
 if "initialized" not in st.session_state:
     for k, v in PRESETS["Persona A (example)"].items():
@@ -234,14 +239,22 @@ rhr_bucket = st.sidebar.selectbox(
 )
 
 st.sidebar.divider()
-generate = st.sidebar.button("Generate report")
+debug_mode = st.sidebar.checkbox("Debug mode", value=st.session_state.get("debug_mode", False), key="debug_mode")
 
+if st.sidebar.button("Generate report"):
+    st.session_state.generated = True
+
+
+if st.sidebar.button("Reset report"):
+    st.session_state.generated = False
 
 
 
 # Report Rendering
 
-if generate:
+if st.session_state.generated:
+
+
     x = Inputs(
         age=age,
         sex=sex,
