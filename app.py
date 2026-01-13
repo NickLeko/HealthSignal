@@ -333,7 +333,7 @@ if st.session_state.generated:
         )
 
     with tabs[4]:
-    st.markdown("## Debug")
+        st.markdown("## Debug")
 
     with st.container(height=600):
         st.write(
