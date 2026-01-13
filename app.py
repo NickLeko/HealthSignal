@@ -238,6 +238,7 @@ generate = st.sidebar.button("Generate report")
 
 
 
+
 # Report Rendering
 
 if generate:
@@ -269,18 +270,13 @@ if generate:
 
     # Debug toggle (appears after generate)
     debug = st.checkbox("Debug mode (show internals)")
-    if debug:
-        st.write(
-            {
-                "cardiometabolic": {"level": cardio_lvl, "points": cardio_pts, "drivers": cardio_reasons},
-                "sleep_stress": {"level": sleep_lvl, "points": sleep_pts, "drivers": sleep_reasons},
-                "msk_energy": {"level": msk_lvl, "points": msk_pts, "drivers": msk_reasons},
-                "actions_selected": [a["title"] for a in actions],
-            }
-        )
 
-    # ---- Fix A: render each section in its own container ----
-    with st.container():
+    # Tabs-based report (avoids scrolling issues on desktop/mobile)
+    tabs = st.tabs(
+        ["Risk Summary", "Priority Actions", "Warning Signals", "Deprioritization", "Debug"]
+    )
+
+    with tabs[0]:
         st.markdown("## Risk Summary (5–10 year horizon)")
         st.markdown(
             f"**Cardiometabolic risk — {cardio_lvl}**  \n"
@@ -295,10 +291,10 @@ if generate:
             f"Drivers: {', '.join(sleep_reasons) if sleep_reasons else 'insufficient data'}"
         )
 
-    with st.container():
+    with tabs[1]:
         st.markdown("## Priority Actions (next 90 days)")
         if not actions:
-            st.info("No actions triggered. (Likely missing/unknown inputs; check debug mode.)")
+            st.info("No actions triggered. (Likely missing/unknown inputs; check Debug.)")
         else:
             for i, a in enumerate(actions, 1):
                 st.markdown(
@@ -307,14 +303,14 @@ if generate:
                     f"Why: {a['why']}"
                 )
 
-    with st.container():
+    with tabs[2]:
         st.markdown("## Early Warning Signals")
         st.markdown("- Blood pressure trending up (esp. consistent >130/85 at home)")
         st.markdown("- Waist/weight trend increasing over 2–3 months")
         st.markdown("- Sleep <6 hours on multiple nights/week")
         st.markdown("- Resting HR trending upward (if tracked)")
 
-    with st.container():
+    with tabs[3]:
         st.markdown("## What you do **NOT** need to worry about right now")
         st.markdown(
             "- Continuous glucose monitors\n"
@@ -323,6 +319,20 @@ if generate:
             "- Supplement stacks\n"
             "- Extreme diets/biohacks"
         )
+
+    with tabs[4]:
+        st.markdown("## Debug")
+        if debug:
+            st.write(
+                {
+                    "cardiometabolic": {"level": cardio_lvl, "points": cardio_pts, "drivers": cardio_reasons},
+                    "sleep_stress": {"level": sleep_lvl, "points": sleep_pts, "drivers": sleep_reasons},
+                    "msk_energy": {"level": msk_lvl, "points": msk_pts, "drivers": msk_reasons},
+                    "actions_selected": [a["title"] for a in actions],
+                }
+            )
+        else:
+            st.info("Toggle **Debug mode** above to show internal scoring.")
 
     st.caption(
         "Decision support only. Not diagnosis or treatment. Seek clinical care for concerning symptoms or major changes."
