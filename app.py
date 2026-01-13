@@ -243,17 +243,54 @@ rhr_bucket = st.sidebar.selectbox(
 st.sidebar.divider()
 
 if st.sidebar.button("Generate report"):
+    # Build Inputs from sidebar values
+    x = Inputs(
+        age=age,
+        sex=sex,
+        height_cm=height_cm,
+        weight_kg=weight_kg,
+        family_cvd=family_cvd,
+        family_t2d=family_t2d,
+        exercise_bucket=exercise_bucket.split()[0],
+        sleep_quality=sleep_quality,
+        sleep_duration_bucket=sleep_duration_bucket,
+        alcohol_bucket=alcohol_bucket,
+        smoking_vaping=smoking_vaping,
+        known_htn=known_htn,
+        known_prediabetes=known_prediabetes,
+        known_sleep_apnea=known_sleep_apnea,
+        bp_bucket=bp_bucket,
+        ldl_bucket=ldl_bucket,
+        a1c_bucket=a1c_bucket,
+        rhr_bucket=rhr_bucket,
+    )
+
+    # Compute report
+    cardio_lvl, cardio_pts, cardio_reasons = score_cardiometabolic(x)
+    sleep_lvl, sleep_pts, sleep_reasons = score_sleep_stress(x)
+    msk_lvl, msk_pts, msk_reasons = score_msk_energy(x)
+    actions = pick_actions(cardio_lvl, sleep_lvl, msk_lvl, x)
+
+    # Persist report (CRITICAL)
+    st.session_state.report = {
+        "cardio": {"level": cardio_lvl, "points": cardio_pts, "reasons": cardio_reasons},
+        "sleep": {"level": sleep_lvl, "points": sleep_pts, "reasons": sleep_reasons},
+        "msk": {"level": msk_lvl, "points": msk_pts, "reasons": msk_reasons},
+        "actions": actions,
+    }
+
     st.session_state.generated = True
 
 
 if st.sidebar.button("Reset report"):
     st.session_state.generated = False
+    st.session_state.report = None
 
 
 
-# ----------------------------
+
 # Report Rendering (state-driven)
-# ----------------------------
+
 if st.session_state.generated:
     report = st.session_state.get("report")
 
