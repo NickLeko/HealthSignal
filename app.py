@@ -306,8 +306,7 @@ if st.session_state.generated:
 
     with tabs[1]:
         st.markdown("## Priority Actions (next 90 days)")
-        if not actions:
-            st.info("No actions triggered. (Likely missing/unknown inputs; check Debug.)")
+        ")
         else:
             for i, a in enumerate(actions, 1):
                 st.markdown(
