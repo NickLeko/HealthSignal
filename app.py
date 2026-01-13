@@ -305,14 +305,16 @@ if st.session_state.generated:
         )
 
     with tabs[1]:
-        st.markdown("## Priority Actions (next 90 days)")")
-        else:
-            for i, a in enumerate(actions, 1):
-                st.markdown(
-                    f"**Action {i}: {a['title']}**  \n"
-                    f"Target: {a['target']}  \n"
-                    f"Why: {a['why']}"
-                )
+    st.markdown("## Priority Actions (next 90 days)")
+
+    for i, a in enumerate(actions, 1):
+        st.markdown(
+            f"**Action {i}: {a['title']}**  \n"
+            f"Target: {a['target']}  \n"
+            f"Why: {a['why']}"
+        )
+
+                
 
     with tabs[2]:
         st.markdown("## Early Warning Signals")
