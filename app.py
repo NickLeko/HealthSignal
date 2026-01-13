@@ -333,22 +333,26 @@ if st.session_state.generated:
         )
 
     with tabs[4]:
-        st.markdown("## Debug")
-        if debug:
-            st.write(
-                {
-                    "cardiometabolic": {"level": cardio_lvl, "points": cardio_pts, "drivers": cardio_reasons},
-                    "sleep_stress": {"level": sleep_lvl, "points": sleep_pts, "drivers": sleep_reasons},
-                    "msk_energy": {"level": msk_lvl, "points": msk_pts, "drivers": msk_reasons},
-                    "actions_selected": [a["title"] for a in actions],
-                }
-            )
-        else:
-            st.info("Toggle **Debug mode** above to show internal scoring.")
+    st.markdown("## Debug")
 
-    st.caption(
-        "Decision support only. Not diagnosis or treatment. Seek clinical care for concerning symptoms or major changes."
-    )
-
-else:
-    st.info("Use the sidebar to select a preset (e.g., Persona A) and click **Generate report**.")
+    with st.container(height=600):
+        st.write(
+            {
+                "cardiometabolic": {
+                    "level": cardio_lvl,
+                    "points": cardio_pts,
+                    "drivers": cardio_reasons,
+                },
+                "sleep_stress": {
+                    "level": sleep_lvl,
+                    "points": sleep_pts,
+                    "drivers": sleep_reasons,
+                },
+                "msk_energy": {
+                    "level": msk_lvl,
+                    "points": msk_pts,
+                    "drivers": msk_reasons,
+                },
+                "actions_selected": [a["title"] for a in actions],
+            }
+        )
