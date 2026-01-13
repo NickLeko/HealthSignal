@@ -239,7 +239,6 @@ rhr_bucket = st.sidebar.selectbox(
 )
 
 st.sidebar.divider()
-debug_mode = st.sidebar.checkbox("Debug mode", value=st.session_state.get("debug_mode", False), key="debug_mode")
 
 if st.sidebar.button("Generate report"):
     st.session_state.generated = True
