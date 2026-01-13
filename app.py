@@ -280,8 +280,7 @@ if st.session_state.generated:
     msk_lvl, msk_pts, msk_reasons = score_msk_energy(x)
     actions = pick_actions(cardio_lvl, sleep_lvl, msk_lvl, x)
 
-    # Debug toggle (appears after generate)
-    debug = st.checkbox("Debug mode (show internals)")
+    
 
     # Tabs-based report (stable on desktop + mobile)
 tabs = st.tabs(
@@ -329,9 +328,9 @@ with tabs[2]:
     st.markdown("- Sleep <6 hours on multiple nights/week")
     st.markdown("- Resting HR trending upward (if tracked)")
 
-# ----------------------------
+
 # Tab 3 — Deprioritization
-# ----------------------------
+
 with tabs[3]:
     st.markdown("## What you do **NOT** need to worry about right now")
     st.markdown(
@@ -342,9 +341,9 @@ with tabs[3]:
         "- Extreme diets/biohacks"
     )
 
-# ----------------------------
+
 # Tab 4 — Debug (Internal)
-# ----------------------------
+
 with tabs[4]:
     st.markdown("## Debug (Internal)")
 
