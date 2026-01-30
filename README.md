@@ -121,7 +121,12 @@ Narratively, it extends an earlier acute-care triage project into preventive car
 * Logic validated across multiple personas
 * UI and state handling finalized
 * Feature expansion intentionally paused to avoid scope creep
+* 
 
+## Data & Privacy Notes
+- This prototype is intended for **demonstration with synthetic/example data only**
+- Do **not** enter real patient identifiers or protected health information (PHI)
+- No data persistence, EHR integration, or clinical workflow validation is implemented
 
 
 ## Disclaimer
